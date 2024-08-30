@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { config } from "dotenv";
+import morgan from "morgan";
 config();
 
 const app = express();
@@ -17,6 +18,8 @@ app.use(
 ); // CORS setup
 
 app.use(cookieParser()); // for token parsing
+
+app.use(morgan("dev")); // middleware for logging "dev" output in terminal
 
 app.get("/ping", (req, res) => {
   res.send("pong");

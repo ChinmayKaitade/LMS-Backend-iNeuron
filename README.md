@@ -2,15 +2,15 @@
 
 ## 📚 LMS Main Structure
 
-![Main Image](./LMS%20Main.jpg)
+![Main Image](./Images/LMS%20Main.jpg)
 
 ## 📚 LMS Student
 
-![Student Side Image](./LMS%20Student.jpg)
+![Student Side Image](./Images/LMS%20Student.jpg)
 
 ## 📚 LMS Admin
 
-![Admin Side Image](./LMS%20Admin.jpg)
+![Admin Side Image](./Images/LMS%20Admin.jpg)
 
 ### 💡 Server Structure
 
@@ -59,5 +59,6 @@ Server
 - jsonwebtoken
 - mongoose
 - multer
+- morgan
 - nodemailer
 - razorpay
