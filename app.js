@@ -4,7 +4,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { config } from "dotenv";
 import morgan from "morgan";
-import userRoutes from "./routes/user.routes.js"
+import userRoutes from "./routes/user.routes.js";
+import errorMiddleware from "./middlewares/error.middleware.js";
 config();
 
 const app = express();
@@ -31,5 +32,7 @@ app.use("/api/v1/user", userRoutes);
 app.use("*", (req, res) => {
   res.status(404).send("OOPS! Page Not Found");
 });
+
+app.use(errorMiddleware);
 
 export default app;

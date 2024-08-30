@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import bcrypt from "bcryptjs";
 
 const userSchema = new Schema(
   {
@@ -47,6 +48,17 @@ const userSchema = new Schema(
     timestamps: true,
   }
 );
+
+// encrypt password
+userSchema.pre("save", async function (next) {
+  // if password is not changed
+  if (!this.isModified("password")) {
+    return next();
+  }
+
+  // if password changed
+  this.password = await bcrypt.hash(this.password, 10);
+});
 
 const User = model("User", userSchema);
 
