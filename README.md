@@ -1,18 +1,18 @@
 # LMS (Learning Management System) 🚀🔥
 
-## LMS Main Structure
+## 📚 LMS Main Structure
 
 ![Main Image](./LMS%20Main.jpg)
 
-## LMS Student
+## 📚 LMS Student
 
 ![Student Side Image](./LMS%20Student.jpg)
 
-## LMS Admin
+## 📚 LMS Admin
 
 ![Admin Side Image](./LMS%20Admin.jpg)
 
-### Server Structure
+### 💡 Server Structure
 
 ```
 Server
@@ -47,3 +47,17 @@ Server
         - mail send
         - error tracking, etc
 ```
+
+### ⚒️ Dependencies
+
+- bcryptjs
+- cloudinary
+- cookie-parser
+- cors
+- dotenv
+- express
+- jsonwebtoken
+- mongoose
+- multer
+- nodemailer
+- razorpay
