@@ -3,6 +3,7 @@ import AppError from "../utils/error.util.js";
 import cloudinary from "cloudinary";
 import fs from "fs/promises";
 import sendEmail from "../utils/sendEmail.js";
+import crypto from "crypto";
 
 const cookieOptions = {
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
@@ -80,7 +81,7 @@ const register = async (req, res, next) => {
   // set token into cookie
   res.cookie("token", token, cookieOptions);
 
-  res.status(201).send({
+  res.status(201).json({
     success: true,
     message: "User registered successfully",
     user,
@@ -114,7 +115,7 @@ const login = async (req, res) => {
     // token set into cookie
     res.cookie("token", token, cookieOptions);
 
-    res.status(200).send({
+    res.status(200).json({
       success: true,
       message: "User Logged In Successfully",
     });
@@ -132,7 +133,7 @@ const logout = (req, res) => {
     httpOnly: true,
   });
 
-  res.status(200).send({
+  res.status(200).json({
     success: true,
     message: "User Logged Out Successfully",
   });
@@ -145,7 +146,7 @@ const getProfile = async (req, res) => {
     const userId = req.user.id;
     const user = await User.findById(userId);
 
-    res.status(200).send({
+    res.status(200).json({
       success: true,
       message: "User Details",
       user,
@@ -185,7 +186,7 @@ const forgotPassword = async (req, res, next) => {
   try {
     await sendEmail(email, subject, message);
 
-    res.status(200).send({
+    res.status(200).json({
       success: true,
       message: `Reset Password token has been sent to ${email} successfully`,
     });
@@ -208,6 +209,39 @@ const forgotPassword = async (req, res, next) => {
 // reset password logic
 const resetPassword = async (req, res) => {
   // reset password route
+  const { resetToken } = req.params;
+
+  const { password } = req.body;
+
+  // generate forgot password token
+  const forgotPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  // check for is user exists on token
+  const user = await User.findOne({
+    forgotPasswordToken,
+    forgotPasswordExpiry: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return next(
+      new AppError("Token is Invalid or Expired. Please, try again"),
+      400
+    );
+  }
+
+  user.password = password;
+  user.forgotPasswordToken = undefined;
+  user.forgotPasswordExpiry = undefined;
+
+  user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Password Changed Successfully",
+  });
 };
 
 export { register, login, logout, getProfile, forgotPassword, resetPassword };

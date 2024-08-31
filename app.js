@@ -11,6 +11,7 @@ config();
 const app = express();
 
 app.use(express.json()); // parse req.body
+app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
