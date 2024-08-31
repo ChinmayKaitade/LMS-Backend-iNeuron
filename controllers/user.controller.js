@@ -7,6 +7,7 @@ const cookieOptions = {
   secure: true,
 };
 
+// register logic
 const register = async (req, res, next) => {
   // register route
   const { fullName, email, password } = req.body;
@@ -58,6 +59,7 @@ const register = async (req, res, next) => {
   });
 };
 
+// login logic
 const login = async (req, res) => {
   // login route
   try {
@@ -93,12 +95,36 @@ const login = async (req, res) => {
   }
 };
 
+// logout logic
 const logout = (req, res) => {
   // logout route
+  res.cookie("token", null, {
+    secure: true,
+    maxAge: 0,
+    httpOnly: true,
+  });
+
+  res.status(200).send({
+    success: true,
+    message: "User Logged Out Successfully",
+  });
 };
 
-const getProfile = (req, res) => {
+// getProfile logic
+const getProfile = async (req, res) => {
   // getProfile route
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+
+    res.status(200).send({
+      success: true,
+      message: "User Details",
+      user,
+    });
+  } catch (error) {
+    return next(new AppError("Failed to fetch Profile details", 500));
+  }
 };
 
 export { register, login, logout, getProfile };
