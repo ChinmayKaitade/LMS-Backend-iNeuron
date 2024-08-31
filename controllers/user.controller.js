@@ -227,8 +227,7 @@ const resetPassword = async (req, res) => {
 
   if (!user) {
     return next(
-      new AppError("Token is Invalid or Expired. Please, try again"),
-      400
+      new AppError("Token is Invalid or Expired. Please, try again", 400)
     );
   }
 
@@ -244,4 +243,52 @@ const resetPassword = async (req, res) => {
   });
 };
 
-export { register, login, logout, getProfile, forgotPassword, resetPassword };
+// change password logic
+const changePassword = async (req, res) => {
+  // change password
+  const { oldPassword, newPassword } = req.body;
+  const { id } = req.user;
+
+  // if you doesn't have old password or new password
+  if (!oldPassword || !newPassword) {
+    return next(new AppError("All fields are mandatory", 400));
+  }
+
+  // check id corresponding to its password
+  const user = await User.findById(id).select("+password");
+
+  // if no user present
+  if (!user) {
+    return next(new AppError("User doesn't exists", 400));
+  }
+
+  // compare password is valid or not
+  const isPasswordValid = await user.comparePassword(oldPassword);
+
+  // if password doesn't match
+  if (!isPasswordValid) {
+    return next(new AppError("Invalid Old Password", 400));
+  }
+
+  // password match
+  user.password = newPassword;
+
+  await user.save();
+
+  user.password = undefined;
+
+  res.status(200).json({
+    success: true,
+    message: "Password Changed Successfully",
+  });
+};
+
+export {
+  register,
+  login,
+  logout,
+  getProfile,
+  forgotPassword,
+  resetPassword,
+  changePassword,
+};
