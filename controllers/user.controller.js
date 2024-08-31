@@ -1,4 +1,11 @@
+import User from "../models/user.model";
 import AppError from "../utils/error.util";
+
+const cookieOptions = {
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  httpOnly: true,
+  secure: true,
+};
 
 const register = async (req, res, next) => {
   // register route
@@ -37,6 +44,12 @@ const register = async (req, res, next) => {
   // TODO: File Upload
 
   await user.save();
+
+  // generating JWT token
+  const token = await user.generateJWTToken();
+
+  // set token into cookie
+  res.cookie("token", token, cookieOptions);
 
   res.status(201).send({
     success: true,
