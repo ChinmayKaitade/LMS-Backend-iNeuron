@@ -1,5 +1,5 @@
-import User from "../models/user.model";
-import AppError from "../utils/error.util";
+import User from "../models/user.model.js";
+import AppError from "../utils/error.util.js";
 
 const cookieOptions = {
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
@@ -58,8 +58,39 @@ const register = async (req, res, next) => {
   });
 };
 
-const login = (req, res) => {
+const login = async (req, res) => {
   // login route
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return next(new AppError("All fields are required", 400));
+    }
+
+    // user information
+    const user = await User.findOne({
+      email,
+    }).select("+password");
+
+    // user exists or doesn't exists
+    if (!user || !user.comparePassword(password)) {
+      return next(new AppError("Email or Password doesn't match", 400));
+    }
+
+    // if user exits, this will generate Token
+    const token = await user.generateJWTToken();
+    user.password = undefined;
+
+    // token set into cookie
+    res.cookie("token", token, cookieOptions);
+
+    res.status(200).send({
+      success: true,
+      message: "User Logged In Successfully",
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 500));
+  }
 };
 
 const logout = (req, res) => {

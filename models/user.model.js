@@ -77,6 +77,11 @@ userSchema.methods = {
       }
     );
   },
+
+  // compare password method
+  comparePassword: async function () {
+    return await bcrypt.compare(plainTextPassword, this.password);
+  },
 };
 
 const User = model("User", userSchema);
