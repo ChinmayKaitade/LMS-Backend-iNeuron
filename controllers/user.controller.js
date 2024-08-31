@@ -283,6 +283,58 @@ const changePassword = async (req, res) => {
   });
 };
 
+// update user logic
+const updateUser = async (req, res) => {
+  // update user
+  const { fullName } = req.body;
+  const { id } = req.user.id;
+
+  const user = await User.findById(id);
+
+  if (!user) {
+    return next(new AppError("User does not exists", 400));
+  }
+
+  if (req.fullName) {
+    user.fullName = fullName;
+  }
+
+  if (req.file) {
+    await cloudinary.v2.uploader.destroy(user.avatar.public_id); // removing image
+
+    // updating image
+    try {
+      const result = await cloudinary.v2.uploader.upload(req.file.path, {
+        folder: "lms",
+        width: 250,
+        height: 250,
+        gravity: "faces",
+        crop: "fill",
+      });
+
+      // if we get result
+      if (result) {
+        user.avatar.public_id = result.public_id;
+        user.avatar.secure_url = result.secure_url;
+
+        // remove image file from server and storing it to cloudinary
+        fs.rm(`uploads/${req.file.filename}`);
+      }
+    } catch (error) {
+      return next(
+        new AppError(error || "File not uploaded, Please try again", 500)
+      );
+    }
+  }
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "User Details Updated Successfully",
+  });
+};
+
 export {
   register,
   login,
@@ -291,4 +343,5 @@ export {
   forgotPassword,
   resetPassword,
   changePassword,
+  updateUser,
 };
