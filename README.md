@@ -226,3 +226,7 @@ By combining Multer and Cloudinary, you can handle file uploads locally with Mul
 
 This setup is ideal for applications that require efficient media management and delivery, such as e-commerce platforms, social media applications, and content-rich websites.
 
+## Forgot Password
+
+![Forgot Password Image](./Images/Forgot%20Password.jpg)
+
