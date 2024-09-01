@@ -6,6 +6,7 @@ import { config } from "dotenv";
 import morgan from "morgan";
 import userRoutes from "./routes/user.routes.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
+import courseRoute from "./routes/course.routes.js";
 config();
 
 const app = express();
@@ -28,7 +29,8 @@ app.get("/ping", (req, res) => {
   res.send("pong");
 });
 
-app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/user", userRoutes); // user route
+app.use("/api/v1/courses", courseRoute); // courses route
 
 app.use("*", (req, res) => {
   res.status(404).send("OOPS! Page Not Found");
