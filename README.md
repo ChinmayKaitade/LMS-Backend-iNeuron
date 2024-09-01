@@ -230,3 +230,17 @@ This setup is ideal for applications that require efficient media management and
 
 ![Forgot Password Image](./Images/Forgot%20Password.jpg)
 
+## Payment Module
+
+![Payment Module Image]()
+
+### Student
+
+- Subscribe
+- Unsubscribe
+- Verify
+
+### Admin
+
+- List
+- View
