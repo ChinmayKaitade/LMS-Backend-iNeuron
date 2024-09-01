@@ -89,7 +89,7 @@ const register = async (req, res, next) => {
 };
 
 // login logic
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   // login route
   try {
     const { email, password } = req.body;
@@ -140,7 +140,7 @@ const logout = (req, res) => {
 };
 
 // getProfile logic
-const getProfile = async (req, res) => {
+const getProfile = async (req, res, next) => {
   // getProfile route
   try {
     const userId = req.user.id;
@@ -207,7 +207,7 @@ const forgotPassword = async (req, res, next) => {
 };
 
 // reset password logic
-const resetPassword = async (req, res) => {
+const resetPassword = async (req, res, next) => {
   // reset password route
   const { resetToken } = req.params;
 
@@ -244,7 +244,7 @@ const resetPassword = async (req, res) => {
 };
 
 // change password logic
-const changePassword = async (req, res) => {
+const changePassword = async (req, res, next) => {
   // change password
   const { oldPassword, newPassword } = req.body;
   const { id } = req.user;
@@ -284,7 +284,7 @@ const changePassword = async (req, res) => {
 };
 
 // update user logic
-const updateUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
   // update user
   const { fullName } = req.body;
   const { id } = req.user.id;
