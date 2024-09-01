@@ -84,7 +84,7 @@ const createCourse = async (req, res, next) => {
 
       // removing file from local
       fs.rm(`uploads/${req.file.filename}`);
-    } catch {
+    } catch (error) {
       return next(new AppError(error.message, 500));
     }
   }
@@ -101,6 +101,31 @@ const createCourse = async (req, res, next) => {
 // update course logic
 const updateCourse = async (req, res, next) => {
   // update course
+  try {
+    const { id } = req.params;
+
+    const course = await Course.findByIdAndUpdate(
+      id,
+      {
+        $set: req.body,
+      },
+      {
+        runValidators: true,
+      }
+    );
+
+    if (!course) {
+      return next(new AppError("Course with given Id does not exists", 500));
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Course Updated Successfully",
+      course,
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 500));
+  }
 };
 
 // remove course logic
