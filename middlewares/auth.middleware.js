@@ -1,6 +1,7 @@
 import AppError from "../utils/error.util.js";
 import jwt from "jsonwebtoken";
 
+// User Authentication > User is logged in or not
 const isLoggedIn = async (req, res, next) => {
   const { token } = req.cookies;
 
@@ -18,4 +19,17 @@ const isLoggedIn = async (req, res, next) => {
   next();
 };
 
-export { isLoggedIn };
+// Authorization > User is Admin or not
+const authorizedRoles =
+  (...roles) =>
+  async (req, res, next) => {
+    const currentUserRoles = req.user.role;
+
+    if (!roles.includes(currentUserRoles)) {
+      return next(new AppError("You don't have to acess this route", 403));
+    }
+
+    next();
+  };
+
+export { isLoggedIn, authorizedRoles };
