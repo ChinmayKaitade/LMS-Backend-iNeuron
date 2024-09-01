@@ -6,8 +6,8 @@ import {
 
 const router = Router();
 
-router.get("/", getAllCourses);
+router.route("/").get(getAllCourses);
 
-router.get("/:id", getLecturesByCourseId);
+router.route("/:id").get(getLecturesByCourseId);
 
 export default router;
